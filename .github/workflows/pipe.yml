@@ -39,7 +39,7 @@ jobs:
       # 6️⃣ Fazer upload dos arquivos para o S3
       - name: Deploy to S3
         run: |
-          aws s3 sync ./dist/ s3://${{ secrets.AWS_S3_BUCKET }} --delete
+          aws s3 sync ./dist/host-app/browser s3://${{ secrets.AWS_S3_BUCKET }} --delete
 
       # 7️⃣ Invalidar cache do CloudFront (se necessário)
       - name: Invalidate CloudFront cache
