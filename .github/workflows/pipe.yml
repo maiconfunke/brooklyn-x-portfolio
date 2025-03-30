@@ -6,11 +6,13 @@ on:
       - main  # Você pode mudar para outra branch, se necessário
 
 jobs:
-  name: Install dependencies
-  run: npm install
+  build:
+    runs-on: ubuntu-latest
 
-  name: Build
-  run: npm run build
+    steps:
+      - name: Install dependencies
+        run: |
+          npm isntall
 
   deploy:
     runs-on: ubuntu-latest
