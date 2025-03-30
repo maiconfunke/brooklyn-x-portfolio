@@ -1,36 +1,47 @@
-name: Deploy to S3
+name: Deploy Angular to S3
 
 on:
   push:
     branches:
-      - main  # Você pode mudar para outra branch, se necessário
+      - main  # Roda o deploy sempre que houver um push na branch main
 
 jobs:
-  name: Install dependencies
-  run: npm install
-
-  name: Build
-  run: npm run build
-
   deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
-      # Passo 1: Check-out o código
+      # 1️⃣ Checkout do código
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      # Passo 2: Configuração da AWS CLI
-      - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v1
+      # 2️⃣ Configurar Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # 3️⃣ Instalar dependências do Angular
+      - name: Install dependencies
+        run: npm install
+
+      # 4️⃣ Build da aplicação Angular
+      - name: Build Angular app
+        run: npm run build --prod
+
+      # 5️⃣ Configurar credenciais da AWS
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1  # Defina a sua região da AWS
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      # Passo 3: Sincronizar arquivos para o S3
-      - name: Sync files to S3
+      # 6️⃣ Fazer upload dos arquivos para o S3
+      - name: Deploy to S3
         run: |
-          aws s3 sync ./dist s3://brooklyn-x-bucket --delete
-        # Ajuste o caminho do diretório e o nome do bucket
-        # A flag --delete garante que arquivos removidos do diretório local também sejam removidos do S3
+          aws s3 sync ./dist/ s3://${{ secrets.AWS_S3_BUCKET }} --delete
+
+      # 7️⃣ Invalidar cache do CloudFront (se necessário)
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
