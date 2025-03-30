@@ -6,6 +6,12 @@ on:
       - main  # Você pode mudar para outra branch, se necessário
 
 jobs:
+  name: Install dependencies
+  run: npm install
+
+  name: Build
+  run: npm run build
+
   deploy:
     runs-on: ubuntu-latest
 
@@ -25,6 +31,6 @@ jobs:
       # Passo 3: Sincronizar arquivos para o S3
       - name: Sync files to S3
         run: |
-          aws s3 sync ./dist/host-app/browser s3://brooklyn-x-bucket --delete
+          aws s3 sync ./dist s3://brooklyn-x-bucket --delete
         # Ajuste o caminho do diretório e o nome do bucket
         # A flag --delete garante que arquivos removidos do diretório local também sejam removidos do S3
