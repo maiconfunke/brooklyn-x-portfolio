@@ -1,0 +1,30 @@
+name: Deploy to S3
+
+on:
+  push:
+    branches:
+      - main  # Você pode mudar para outra branch, se necessário
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Passo 1: Check-out o código
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Passo 2: Configuração da AWS CLI
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1  # Defina a sua região da AWS
+
+      # Passo 3: Sincronizar arquivos para o S3
+      - name: Sync files to S3
+        run: |
+          aws s3 sync ./dist/host-app/browser s3://brooklyn-x-bucket --delete
+        # Ajuste o caminho do diretório e o nome do bucket
+        # A flag --delete garante que arquivos removidos do diretório local também sejam removidos do S3
