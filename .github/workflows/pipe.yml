@@ -6,9 +6,9 @@ on:
       - main  # Roda o deploy sempre que houver um push na branch main
 
 jobs:
-  deploy:
+
+  install_dependencies:
     runs-on: ubuntu-latest
-    
     steps:
       # 1️⃣ Checkout do código
       - name: Checkout code
@@ -24,11 +24,39 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # 4️⃣ Build da aplicação Angular
+  build:
+    runs-on: ubuntu-latest
+    needs: install_dependencies  # Este job depende do job install_dependencies
+    steps:
+      # 1️⃣ Checkout do código (necessário para garantir que o código mais recente seja usado)
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2️⃣ Build da aplicação Angular
       - name: Build Angular app
         run: npm run build --prod
 
-      # 5️⃣ Configurar credenciais da AWS
+  test:
+    runs-on: ubuntu-latest
+    needs: build  # Este job depende do job build
+    steps:
+      # 1️⃣ Checkout do código (novamente necessário para garantir a versão correta)
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2️⃣ Rodar testes (Se você tiver testes no seu projeto, use este step)
+      - name: Run tests
+        run: npm test
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test  # Este job depende do job test
+    steps:
+      # 1️⃣ Checkout do código (necessário para garantir que a versão final seja usada)
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2️⃣ Configurar credenciais da AWS
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -36,12 +64,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 6️⃣ Fazer upload dos arquivos para o S3
+      # 3️⃣ Fazer upload dos arquivos para o S3
       - name: Deploy to S3
         run: |
           aws s3 sync ./dist/host-app/browser s3://${{ secrets.AWS_S3_BUCKET }} --delete
 
-      # 7️⃣ Invalidar cache do CloudFront (se necessário)
+      # 4️⃣ Invalidar cache do CloudFront (se necessário)
       - name: Invalidate CloudFront cache
         run: |
           aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
