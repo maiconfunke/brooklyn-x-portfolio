@@ -1,4 +1,10 @@
-<canvas #canvasElement>
-    
-</canvas>
+<div class="desktop" #container>
+    <div
+      class="icon"
+      cdkDrag
+      (cdkDragMoved)="onDragMoved($event)"
+      [cdkDragFreeDragPosition]="dragPosition">
+      meu ícone
+    </div>
+  </div>
 <router-outlet />
