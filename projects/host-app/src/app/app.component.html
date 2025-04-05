@@ -1,2 +1,10 @@
-<h1>DAWNNN</h1>
+<div class="desktop" #container>
+    <div
+      class="icon"
+      cdkDrag
+      (cdkDragMoved)="onDragMoved($event)"
+      [cdkDragFreeDragPosition]="dragPosition">
+      meu ícone
+    </div>
+  </div>
 <router-outlet />
