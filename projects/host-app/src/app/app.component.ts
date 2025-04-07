@@ -1,73 +1,112 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { CdkDragMove, DragDropModule } from '@angular/cdk/drag-drop';
+import {
+  CdkDragEnd,
+  CdkDragMove,
+  DragDropModule,
+} from '@angular/cdk/drag-drop';
+import { IDragPosition } from '../interfaces/drag-position.interface';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, DragDropModule],
+  imports: [RouterOutlet, DragDropModule, CommonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
   @ViewChild('container') containerRef!: ElementRef;
-  dragPosition = { x: 10, y: 10 };
-  private animationFrameId: number | null = null;
-  private targetPosition = { x: 0, y: 0 };
 
-  onDragMoved(event: CdkDragMove) {
+  folders = [
+    {
+      position: { x: 10, y: 10 } as IDragPosition,
+      label: 'folder 1',
+    },
+    {
+      position: { x: 100, y: 100 } as IDragPosition,
+      label: 'folder 2',
+    },
+    {
+      position: { x: 200, y: 200 } as IDragPosition,
+      label: 'folder 3',
+    },
+  ];
+
+  readonly margin = 10;
+
+  onDragMoved(event: CdkDragMove, dragPosition: IDragPosition) {
     const container = this.containerRef.nativeElement;
     const icon = event.source.element.nativeElement;
-
+  
     const containerRect = container.getBoundingClientRect();
     const iconRect = icon.getBoundingClientRect();
-
+  
     const offsetX = iconRect.width / 2;
     const offsetY = iconRect.height / 2;
-
-    const margin = 16;
-
-    let newX = event.pointerPosition.x - containerRect.left - offsetX;
-    let newY = event.pointerPosition.y - containerRect.top - offsetY;
-
-    if (newX < margin) newX = margin;
-    if (newX + iconRect.width + margin > containerRect.width) {
-      newX = containerRect.width - iconRect.width - margin;
-    }
-
-    if (newY < margin) newY = margin;
-    if (newY + iconRect.height + margin > containerRect.height) {
-      newY = containerRect.height - iconRect.height - margin;
-    }
-
-    this.targetPosition = { x: newX, y: newY };
-    this.smoothMove();
+  
+    const pointerX = event.pointerPosition.x - containerRect.left - offsetX;
+    const pointerY = event.pointerPosition.y - containerRect.top - offsetY;
+  
+    const maxX = container.clientWidth - iconRect.width - this.margin;
+    const maxY = container.clientHeight - iconRect.height - this.margin;
+  
+    dragPosition.x = Math.min(Math.max(pointerX, this.margin), maxX);
+    dragPosition.y = Math.min(Math.max(pointerY, this.margin), maxY);
+  
+    event.source._dragRef.setFreeDragPosition(dragPosition);
   }
+  
 
-  smoothMove() {
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
-    }
-
-    const animate = () => {
-      const dx = this.targetPosition.x - this.dragPosition.x;
-      const dy = this.targetPosition.y - this.dragPosition.y;
-
-      // velocidade (quanto menor, mais lento)
-      const easing = 0.1;
-
-      if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) {
-        this.dragPosition = {
-          x: this.dragPosition.x + dx * easing,
-          y: this.dragPosition.y + dy * easing,
-        };
-
-        this.animationFrameId = requestAnimationFrame(animate);
-      } else {
-        this.dragPosition = { ...this.targetPosition };
+  onDragEnded(event: CdkDragEnd, dragPosition: IDragPosition) {
+    const gridSize = 95;
+  
+    // 1. Coordenadas do grid
+    const targetX = Math.round(dragPosition.x / gridSize);
+    const targetY = Math.round(dragPosition.y / gridSize);
+  
+    // 2. Verifica se já existe um item ocupando essa posição
+    const isOccupied = this.folders.some(icon => {
+      const iconX = Math.round(icon.position.x / gridSize);
+      const iconY = Math.round(icon.position.y / gridSize);
+      return iconX === targetX && iconY === targetY && icon.position !== dragPosition;
+    });
+  
+    let finalX = targetX;
+    let finalY = targetY;
+  
+    if (isOccupied) {
+      // 3. Busca uma posição livre próxima
+      const directions = [
+        [1, 0],   // direita
+        [-1, 0],  // esquerda
+        [0, 1],   // abaixo
+        [0, -1],  // acima
+      ];
+  
+      for (let [dx, dy] of directions) {
+        const newX = targetX + dx;
+        const newY = targetY + dy;
+  
+        const found = this.folders.some(icon => {
+          const iconX = Math.round(icon.position.x / gridSize);
+          const iconY = Math.round(icon.position.y / gridSize);
+          return iconX === newX && iconY === newY && icon.position !== dragPosition;
+        });
+  
+        if (!found) {
+          finalX = newX;
+          finalY = newY;
+          break;
+        }
       }
-    };
-
-    animate();
+    }
+  
+    // 4. Converte de volta para coordenadas absolutas e aplica
+    dragPosition.x = finalX * gridSize;
+    dragPosition.y = finalY * gridSize;
+  
+    event.source._dragRef.setFreeDragPosition(dragPosition);
   }
+  
 }
