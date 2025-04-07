@@ -8,13 +8,13 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IDragPosition } from '../../interfaces/drag-position.interface';
 
 @Component({
-  selector: 'folder',
+  selector: 'desktop-icon',
   standalone: true,
   imports: [CommonModule, DragDropModule],
-  templateUrl: './folder.component.html',
-  styleUrls: ['./folder.component.scss'],
+  templateUrl: './desktop-icon.component.html',
+  styleUrls: ['./desktop-icon.component.scss'],
 })
-export class FolderComponent {
+export class DesktopIconComponent {
   @Input('data') data: any;
   @Output() onDragEnded = new EventEmitter();
   @Output() onDragMoved = new EventEmitter();

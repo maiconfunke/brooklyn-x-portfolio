@@ -14,14 +14,14 @@
     text-align: center;
     padding: 10px 4px;
     background-color: transparent;
-  
+
     &::before {
       content: '';
       display: block;
       width: 60%;
       height: 60%;
       margin-bottom: 6px;
-      background-image: url(/folder_icon.png);
+      background-image: var(--bg-image-url);
       background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
