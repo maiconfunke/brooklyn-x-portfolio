@@ -87,7 +87,8 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/host-app/public"
+                "input": "projects/host-app/public",
+                "output": "/"
               }
             ],
             "styles": [

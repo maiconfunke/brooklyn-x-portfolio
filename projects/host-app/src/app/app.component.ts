@@ -7,11 +7,12 @@ import {
 } from '@angular/cdk/drag-drop';
 import { IDragPosition } from '../interfaces/drag-position.interface';
 import { CommonModule } from '@angular/common';
+import { FolderComponent } from "../componentes/folder/folder.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, DragDropModule, CommonModule],
+  imports: [RouterOutlet, DragDropModule, CommonModule, FolderComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
@@ -117,7 +118,6 @@ export class AppComponent {
   }
 
   onDragStarted(draggedItem: any) {
-    // Define o maior z-index entre todos os itens + 1
     const maxZIndex = Math.max(...this.folders.map(f => f.zIndex || 1));
     draggedItem.zIndex = maxZIndex + 1;
   }

@@ -1,0 +1,10 @@
+<div class="icon" 
+    cdkDrag 
+    [ngStyle]="{ 'z-index': data.zIndex }"
+    [cdkDragFreeDragPosition]="data.position"
+    (cdkDragStarted)="onDragStartedEmitter(data)"
+    (cdkDragMoved)="onDragMovedEmitter($event, data.position)"
+    (cdkDragEnded)="onDragEndedEmitter($event, data.position)"
+    >
+    <span class="description">{{ data.label }}</span>
+</div>
