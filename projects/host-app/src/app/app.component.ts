@@ -20,20 +20,26 @@ export class AppComponent {
 
   folders = [
     {
-      position: { x: 10, y: 10 } as IDragPosition,
-      label: 'folder 1',
+      id: 1,
+      position: { x: 0, y: 10 } as IDragPosition,
+      label: 'Meus arquivos',
+      zIndex: 1
     },
     {
-      position: { x: 100, y: 100 } as IDragPosition,
-      label: 'folder 2',
+      id: 2,
+      position: { x: 0, y: 95 } as IDragPosition,
+      label: 'Minhas imagens',
+      zIndex: 1
     },
     {
-      position: { x: 200, y: 200 } as IDragPosition,
-      label: 'folder 3',
+      id: 3,
+      position: { x: 0, y: 190 } as IDragPosition,
+      label: 'Meus videos',
+      zIndex: 1
     },
   ];
 
-  readonly margin = 10;
+  readonly margin = 0;
 
   onDragMoved(event: CdkDragMove, dragPosition: IDragPosition) {
     const container = this.containerRef.nativeElement;
@@ -106,7 +112,14 @@ export class AppComponent {
     dragPosition.x = finalX * gridSize;
     dragPosition.y = finalY * gridSize;
   
+    console.log(dragPosition)
     event.source._dragRef.setFreeDragPosition(dragPosition);
+  }
+
+  onDragStarted(draggedItem: any) {
+    // Define o maior z-index entre todos os itens + 1
+    const maxZIndex = Math.max(...this.folders.map(f => f.zIndex || 1));
+    draggedItem.zIndex = maxZIndex + 1;
   }
   
 }

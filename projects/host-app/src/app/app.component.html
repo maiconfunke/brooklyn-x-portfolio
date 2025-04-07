@@ -1,11 +1,15 @@
 <div class="desktop" #container>
     <div class="overlay"></div>
-    <div class="icon" *ngFor="let item of folders"
-        cdkDrag 
-        (cdkDragMoved)="onDragMoved($event, item.position)"
-        (cdkDragEnded)="onDragEnded($event, item.position)"
-        [cdkDragFreeDragPosition]="item.position">
-        <!-- meu ícone -->
-    </div>
+    @for (item of folders; track item.id) {
+        <div class="icon"
+          cdkDrag
+          (cdkDragStarted)="onDragStarted(item)"
+          (cdkDragMoved)="onDragMoved($event, item.position)"
+          (cdkDragEnded)="onDragEnded($event, item.position)"
+          [cdkDragFreeDragPosition]="item.position"
+          [ngStyle]="{ 'z-index': item.zIndex }">
+          <span class="description">{{ item.label }}</span>
+        </div>
+    }
 </div>
 <router-outlet />
