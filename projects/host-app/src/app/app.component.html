@@ -1,12 +1,12 @@
 <div class="desktop" #container>
     <div class="overlay"></div>
-    @for (item of folders; track item.id) {
-        <folder 
+    @for (item of desktopIcons; track item.id) {
+        <desktop-icon 
             [data]="item"
             (onDragEnded)="onDragEnded($event.event, $event.dragPosition)"
             (onDragMoved)="onDragMoved($event.event, $event.dragPosition)"
             (onDragStarted)="onDragStarted($event)"        
-        ></folder>
+        ></desktop-icon>
     }
 </div>
 <router-outlet />

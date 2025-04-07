@@ -1,5 +1,6 @@
 <div class="icon" 
     cdkDrag 
+    [style.--bg-image-url]="`url(/icons/${data.name}_icon.png)`"
     [ngStyle]="{ 'z-index': data.zIndex }"
     [cdkDragFreeDragPosition]="data.position"
     (cdkDragStarted)="onDragStartedEmitter(data)"

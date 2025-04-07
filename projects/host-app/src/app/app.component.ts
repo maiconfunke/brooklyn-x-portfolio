@@ -7,35 +7,57 @@ import {
 } from '@angular/cdk/drag-drop';
 import { IDragPosition } from '../interfaces/drag-position.interface';
 import { CommonModule } from '@angular/common';
-import { FolderComponent } from "../componentes/folder/folder.component";
+import { DesktopIconComponent } from "../componentes/desktop-icon/desktop-icon.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, DragDropModule, CommonModule, FolderComponent],
+  imports: [RouterOutlet, DragDropModule, CommonModule, DesktopIconComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
   @ViewChild('container') containerRef!: ElementRef;
 
-  folders = [
+  desktopIcons = [
     {
       id: 1,
+      type: 'folder',
+      name: 'folder',
       position: { x: 0, y: 10 } as IDragPosition,
       label: 'Meus arquivos',
       zIndex: 1
     },
     {
       id: 2,
+      type: 'folder',
+      name: 'folder',
       position: { x: 0, y: 95 } as IDragPosition,
       label: 'Minhas imagens',
       zIndex: 1
     },
     {
       id: 3,
+      type: 'folder',
+      name: 'folder',
       position: { x: 0, y: 190 } as IDragPosition,
       label: 'Meus videos',
+      zIndex: 1
+    },
+    {
+      id: 4,
+      type: 'app',
+      name: 'chrome',
+      position: { x: 0, y: 285 } as IDragPosition,
+      label: 'Chrome',
+      zIndex: 1
+    },
+    {
+      id: 4,
+      type: 'app',
+      name: 'vscode',
+      position: { x: 0, y: 380 } as IDragPosition,
+      label: 'Visual Studio',
       zIndex: 1
     },
   ];
@@ -73,7 +95,7 @@ export class AppComponent {
     const targetY = Math.round(dragPosition.y / gridSize);
   
     // 2. Verifica se já existe um item ocupando essa posição
-    const isOccupied = this.folders.some(icon => {
+    const isOccupied = this.desktopIcons.some(icon => {
       const iconX = Math.round(icon.position.x / gridSize);
       const iconY = Math.round(icon.position.y / gridSize);
       return iconX === targetX && iconY === targetY && icon.position !== dragPosition;
@@ -95,7 +117,7 @@ export class AppComponent {
         const newX = targetX + dx;
         const newY = targetY + dy;
   
-        const found = this.folders.some(icon => {
+        const found = this.desktopIcons.some(icon => {
           const iconX = Math.round(icon.position.x / gridSize);
           const iconY = Math.round(icon.position.y / gridSize);
           return iconX === newX && iconY === newY && icon.position !== dragPosition;
@@ -118,7 +140,7 @@ export class AppComponent {
   }
 
   onDragStarted(draggedItem: any) {
-    const maxZIndex = Math.max(...this.folders.map(f => f.zIndex || 1));
+    const maxZIndex = Math.max(...this.desktopIcons.map(f => f.zIndex || 1));
     draggedItem.zIndex = maxZIndex + 1;
   }
   
