@@ -3,6 +3,7 @@
     [style.--bg-image-url]="`url(/icons/${data.name}_icon.png)`"
     [ngStyle]="{ 'z-index': data.zIndex }"
     [cdkDragFreeDragPosition]="data.position"
+    (dblclick)="onDblClick(data)"
     (cdkDragStarted)="onDragStartedEmitter(data)"
     (cdkDragMoved)="onDragMovedEmitter($event, data.position)"
     (cdkDragEnded)="onDragEndedEmitter($event, data.position)"

@@ -19,6 +19,7 @@ export class DesktopIconComponent {
   @Output() onDragEnded = new EventEmitter();
   @Output() onDragMoved = new EventEmitter();
   @Output() onDragStarted = new EventEmitter();
+  @Output() dblClick = new EventEmitter();
 
   onDragEndedEmitter(event: CdkDragEnd, dragPosition: IDragPosition) {
     this.onDragEnded.emit({ event, dragPosition });
@@ -28,5 +29,9 @@ export class DesktopIconComponent {
   }
   onDragStartedEmitter(draggedItem: any) {
     this.onDragStarted.emit(draggedItem);
+  }
+
+  onDblClick(data: any): void {
+    this.dblClick.emit(data)
   }
 }

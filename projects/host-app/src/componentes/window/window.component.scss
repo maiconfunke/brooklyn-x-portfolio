@@ -1,0 +1,51 @@
+.window-container {
+    width: 400px;
+    height: 300px;
+    background: #fff;
+    z-index: 1;
+    position: absolute;
+
+    & .header {
+        width: 100%;
+        background: #eee;
+
+        & .actions {
+            display: flex;
+            justify-content: flex-end;
+
+            & .icon {
+                border: none;
+
+                & img {
+                    width: 15px;
+                    height: 15px;
+                    padding: 4px;
+                    padding-top: 6px;
+                }
+
+                &:hover {
+                    background: #bdbdbd;
+                }
+
+                &.close:hover {
+                    background: #d20202;
+                }
+            }
+        }
+
+    }
+
+    &.maximize {
+        width: 100%;
+        height: 100%;
+        transform: none;
+    }
+}
+
+::ng-deep .cdk-drag-placeholder {
+    display: none !important;
+}
+
+::ng-deep .cdk-drag-preview {
+    display: none !important;
+}

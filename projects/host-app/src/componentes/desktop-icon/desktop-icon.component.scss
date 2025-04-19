@@ -7,13 +7,16 @@
     align-items: center;
     justify-content: flex-end;
     border-radius: 12px;
-    cursor: grab;
     user-select: none;
     color: white;
     font-size: 12px;
     text-align: center;
     padding: 10px 4px;
     background-color: transparent;
+
+    &:hover {
+      background: hsla(0, 2%, 91%, 0.2);
+    }
 
     &::before {
       content: '';

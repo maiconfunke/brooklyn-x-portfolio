@@ -1,12 +1,35 @@
 <div class="desktop" #container>
     <div class="overlay"></div>
     @for (item of desktopIcons; track item.id) {
-        <desktop-icon 
-            [data]="item"
-            (onDragEnded)="onDragEnded($event.event, $event.dragPosition)"
-            (onDragMoved)="onDragMoved($event.event, $event.dragPosition)"
-            (onDragStarted)="onDragStarted($event)"        
+    <desktop-icon [data]="item" 
+        (onDragEnded)="onDragEnded($event.event, $event.dragPosition)"
+        (onDragMoved)="onDragMoved($event.event, $event.dragPosition)" 
+        (onDragStarted)="onDragStarted($event)"
+        (dblClick)="onDblClick($event)"
         ></desktop-icon>
     }
+
+    <ng-container *ngIf="openedFolders.length > 0">
+        @for (item of openedFolders; track item.id) {
+        <app-window 
+        [data]="item" 
+        (onDragMoved)="onDragMoved($event.event, $event.dragPosition)"
+        (onCloseWindow)="onCloseWindow($event)"></app-window>
+        }
+    </ng-container>
+
+
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
 <router-outlet />

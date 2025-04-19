@@ -1,0 +1,16 @@
+<div class="window-container"
+    [class.maximize]="this.isMaximized"
+    cdkDrag
+    [cdkDragFreeDragPosition]="data.position"
+    (cdkDragStarted)="onDragStartedEmitter(data)" 
+    (cdkDragMoved)="onDragMovedEmitter($event, data.position)"
+    (cdkDragEnded)="onDragEndedEmitter($event, data.position)">
+    <div class="header">
+        <div class="actions">
+            <button class="icon minimize"><img src="/icons/minus_icon.png"/></button>
+            <button (click)="toggleMaximize()" class="icon maximize"><img src="/icons/square_icon.png"/></button>
+            <button (click)="closeWindow(data.id)" class="icon close"><img src="/icons/close_icon.png"/></button>
+        </div>
+    </div>
+    <div class="body"></div>
+</div>
